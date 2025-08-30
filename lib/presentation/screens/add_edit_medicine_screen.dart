@@ -68,6 +68,9 @@ class _AddEditMedicineScreenState extends State<AddEditMedicineScreen> {
                   if (value == null || int.tryParse(value) == null) {
                     return 'Please enter a valid quantity';
                   }
+                  if (int.parse(value) < 0) {
+                    return 'Quantity cannot be negative';
+                  }
                   return null;
                 },
                 onSaved: (value) => _quantity = int.parse(value!),
@@ -80,25 +83,43 @@ class _AddEditMedicineScreenState extends State<AddEditMedicineScreen> {
                   if (value == null || double.tryParse(value) == null) {
                     return 'Please enter a valid price';
                   }
+                  if (double.parse(value) < 0) {
+                    return 'Price cannot be negative';
+                  }
                   return null;
                 },
                 onSaved: (value) => _price = double.parse(value!),
               ),
-              ListTile(
-                title: Text('Expiry Date: ${DateFormat.yMd().format(_expiryDate)}'),
-                trailing: const Icon(Icons.calendar_today),
-                onTap: () async {
-                  final pickedDate = await showDatePicker(
-                    context: context,
-                    initialDate: _expiryDate,
-                    firstDate: DateTime(2000),
-                    lastDate: DateTime(2101),
+              FormField<DateTime>(
+                builder: (FormFieldState<DateTime> state) {
+                  return InkWell(
+                    onTap: () async {
+                      final pickedDate = await showDatePicker(
+                        context: context,
+                        initialDate: _expiryDate,
+                        firstDate: DateTime.now(),
+                        lastDate: DateTime(2101),
+                      );
+                      if (pickedDate != null && pickedDate != _expiryDate) {
+                        setState(() {
+                          _expiryDate = pickedDate;
+                        });
+                      }
+                    },
+                    child: InputDecorator(
+                      decoration: InputDecoration(
+                        labelText: 'Expiry Date',
+                        errorText: state.errorText,
+                      ),
+                      child: Text(DateFormat.yMd().format(_expiryDate)),
+                    ),
                   );
-                  if (pickedDate != null && pickedDate != _expiryDate) {
-                    setState(() {
-                      _expiryDate = pickedDate;
-                    });
+                },
+                validator: (value) {
+                  if (_expiryDate.isBefore(DateTime.now())) {
+                    return 'Expiry date cannot be in the past';
                   }
+                  return null;
                 },
               ),
               ElevatedButton(
