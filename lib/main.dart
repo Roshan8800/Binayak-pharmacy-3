@@ -1,6 +1,10 @@
 import 'package:binayak_pharmacy/blocs/medicine_bloc.dart';
 import 'package:binayak_pharmacy/data/database_helper.dart';
 import 'package:binayak_pharmacy/presentation/screens/inventory_screen.dart';
+import 'package:binayak_pharmacy/reports/blocs/report_bloc.dart';
+import 'package:binayak_pharmacy/sales/blocs/sale_bloc.dart';
+import 'package:binayak_pharmacy/reports/presentation/screens/daily_sales_report_screen.dart';
+import 'package:binayak_pharmacy/sales/presentation/screens/sales_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -14,8 +18,18 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => MedicineBloc(DatabaseHelper()),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => MedicineBloc(DatabaseHelper()),
+        ),
+        BlocProvider(
+          create: (context) => SaleBloc(DatabaseHelper()),
+        ),
+        BlocProvider(
+          create: (context) => ReportBloc(DatabaseHelper()),
+        ),
+      ],
       child: MaterialApp(
         title: 'Binayak Pharmacy',
         theme: ThemeData(
@@ -44,8 +58,8 @@ class _HomePageState extends State<HomePage> {
 
   static const List<Widget> _widgetOptions = <Widget>[
     InventoryScreen(),
-    Text('Sales'),
-    Text('Reports'),
+    SalesScreen(),
+    DailySalesReportScreen(),
   ];
 
   void _onItemTapped(int index) {

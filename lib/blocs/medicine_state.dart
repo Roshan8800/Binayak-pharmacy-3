@@ -27,3 +27,36 @@ class MedicineError extends MedicineState {
   @override
   List<Object> get props => [message];
 }
+
+class MedicineAddSuccess extends MedicineState {}
+
+class MedicineAddFailure extends MedicineState {
+  final String message;
+
+  const MedicineAddFailure(this.message);
+
+  @override
+  List<Object> get props => [message];
+}
+
+class MedicineUpdateSuccess extends MedicineState {}
+
+class MedicineUpdateFailure extends MedicineState {
+  final String message;
+
+  const MedicineUpdateFailure(this.message);
+
+  @override
+  List<Object> get props => [message];
+}
+
+class MedicineDeleteSuccess extends MedicineState {}
+
+class MedicineDeleteFailure extends MedicineState {
+  final String message;
+
+  const MedicineDeleteFailure(this.message);
+
+  @override
+  List<Object> get props => [message];
+}

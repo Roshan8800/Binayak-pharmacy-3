@@ -30,11 +30,9 @@ class MedicineBloc extends Bloc<MedicineEvent, MedicineState> {
     try {
       final db = await _databaseHelper.database;
       await db.insert('medicines', event.medicine.toMap());
-      final maps = await db.query('medicines');
-      final medicines = maps.map((map) => Medicine.fromMap(map)).toList();
-      emit(MedicineLoaded(medicines: medicines));
+      emit(MedicineAddSuccess());
     } catch (e) {
-      emit(MedicineError(e.toString()));
+      emit(MedicineAddFailure(e.toString()));
     }
   }
 
@@ -47,11 +45,9 @@ class MedicineBloc extends Bloc<MedicineEvent, MedicineState> {
         where: 'id = ?',
         whereArgs: [event.medicine.id],
       );
-      final maps = await db.query('medicines');
-      final medicines = maps.map((map) => Medicine.fromMap(map)).toList();
-      emit(MedicineLoaded(medicines: medicines));
+      emit(MedicineUpdateSuccess());
     } catch (e) {
-      emit(MedicineError(e.toString()));
+      emit(MedicineUpdateFailure(e.toString()));
     }
   }
 
@@ -63,11 +59,9 @@ class MedicineBloc extends Bloc<MedicineEvent, MedicineState> {
         where: 'id = ?',
         whereArgs: [event.id],
       );
-      final maps = await db.query('medicines');
-      final medicines = maps.map((map) => Medicine.fromMap(map)).toList();
-      emit(MedicineLoaded(medicines: medicines));
+      emit(MedicineDeleteSuccess());
     } catch (e) {
-      emit(MedicineError(e.toString()));
+      emit(MedicineDeleteFailure(e.toString()));
     }
   }
 }

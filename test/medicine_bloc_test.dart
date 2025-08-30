@@ -38,20 +38,10 @@ void main() {
     );
 
     blocTest<MedicineBloc, MedicineState>(
-      'emits [MedicineLoaded] when AddMedicine is added',
+      'emits [MedicineAddSuccess] when AddMedicine is added',
       build: () {
         when(mockDbHelper.database).thenAnswer((_) async => mockDatabase);
         when(mockDatabase.insert('medicines', any)).thenAnswer((_) async => 1);
-        when(mockDatabase.query('medicines')).thenAnswer((_) async => [
-          {
-            'id': 1,
-            'name': 'Test Medicine',
-            'description': '',
-            'quantity': 10,
-            'price': 9.99,
-            'expiryDate': DateTime.now().toIso8601String(),
-          }
-        ]);
         return medicineBloc;
       },
       act: (bloc) => bloc.add(AddMedicine(
@@ -63,29 +53,15 @@ void main() {
         ),
       )),
       expect: () => [
-        isA<MedicineLoaded>().having(
-          (state) => state.medicines.length,
-          'medicines.length',
-          1,
-        ),
+        isA<MedicineAddSuccess>(),
       ],
     );
 
     blocTest<MedicineBloc, MedicineState>(
-      'emits [MedicineLoaded] when UpdateMedicine is added',
+      'emits [MedicineUpdateSuccess] when UpdateMedicine is added',
       build: () {
         when(mockDbHelper.database).thenAnswer((_) async => mockDatabase);
         when(mockDatabase.update('medicines', any, where: anyNamed('where'), whereArgs: anyNamed('whereArgs'))).thenAnswer((_) async => 1);
-        when(mockDatabase.query('medicines')).thenAnswer((_) async => [
-          {
-            'id': 1,
-            'name': 'Updated Medicine',
-            'description': '',
-            'quantity': 20,
-            'price': 19.99,
-            'expiryDate': DateTime.now().toIso8601String(),
-          }
-        ]);
         return medicineBloc;
       },
       act: (bloc) => bloc.add(UpdateMedicine(
@@ -98,29 +74,20 @@ void main() {
         ),
       )),
       expect: () => [
-        isA<MedicineLoaded>().having(
-          (state) => state.medicines.first.name,
-          'medicines.first.name',
-          'Updated Medicine',
-        ),
+        isA<MedicineUpdateSuccess>(),
       ],
     );
 
     blocTest<MedicineBloc, MedicineState>(
-      'emits [MedicineLoaded] when DeleteMedicine is added',
+      'emits [MedicineDeleteSuccess] when DeleteMedicine is added',
       build: () {
         when(mockDbHelper.database).thenAnswer((_) async => mockDatabase);
         when(mockDatabase.delete('medicines', where: anyNamed('where'), whereArgs: anyNamed('whereArgs'))).thenAnswer((_) async => 1);
-        when(mockDatabase.query('medicines')).thenAnswer((_) async => []);
         return medicineBloc;
       },
       act: (bloc) => bloc.add(DeleteMedicine(1)),
       expect: () => [
-        isA<MedicineLoaded>().having(
-          (state) => state.medicines.length,
-          'medicines.length',
-          0,
-        ),
+        isA<MedicineDeleteSuccess>(),
       ],
     );
   });

@@ -81,24 +81,27 @@ class _InventoryScreenState extends State<InventoryScreen> {
           Expanded(
             child: BlocListener<MedicineBloc, MedicineState>(
               listener: (context, state) {
-                if (state is MedicineLoaded) {
-                  final previousState = context.read<MedicineBloc>().state;
-                  if (previousState is MedicineLoaded) {
-                    if (state.medicines.length > previousState.medicines.length) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Medicine added successfully')),
-                      );
-                    } else if (state.medicines.length < previousState.medicines.length) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Medicine deleted successfully')),
-                      );
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Medicine updated successfully')),
-                      );
-                    }
-                  }
-                } else if (state is MedicineError) {
+                if (state is MedicineAddSuccess) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Medicine added successfully')),
+                  );
+                } else if (state is MedicineUpdateSuccess) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Medicine updated successfully')),
+                  );
+                } else if (state is MedicineDeleteSuccess) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Medicine deleted successfully')),
+                  );
+                } else if (state is MedicineAddFailure) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text(state.message)),
+                  );
+                } else if (state is MedicineUpdateFailure) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text(state.message)),
+                  );
+                } else if (state is MedicineDeleteFailure) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text(state.message)),
                   );
